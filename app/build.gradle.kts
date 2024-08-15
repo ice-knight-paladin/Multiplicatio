@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -33,12 +34,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    viewBinding{
-        enable=true
+    viewBinding {
+        enable = true
     }
 }
 
 dependencies {
+
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.common)
+    kapt(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
+
+    testImplementation(libs.androidx.core.testing)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

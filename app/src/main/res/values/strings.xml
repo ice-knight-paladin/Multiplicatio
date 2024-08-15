@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Multiplication</string>
+    <string name="multi">учим таблицу</string>
+    <string name="table_title">таблица умножения</string>
 </resources>
