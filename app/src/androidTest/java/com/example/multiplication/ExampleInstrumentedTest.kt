@@ -1,5 +1,6 @@
 package com.example.multiplication
 
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -67,5 +68,6 @@ class ExampleInstrumentedTest {
                 withId(R.id.main),
             )
         ).check(doesNotExist())
+
     }
 }

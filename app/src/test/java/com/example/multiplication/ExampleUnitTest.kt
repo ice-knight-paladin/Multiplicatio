@@ -1,5 +1,6 @@
 package com.example.multiplication
 
+import android.view.View
 import org.junit.Test
 
 import org.junit.Assert.*
