@@ -3,7 +3,7 @@ package com.example.multiplication
 interface Repository {
 
     interface Add {
-        fun add(value: String, correct: Int, incorrect: Int)
+        fun add(value: String, correct: Int, incorrect: Int): Long
     }
 
     interface ReadItem {
@@ -18,9 +18,10 @@ interface Repository {
         private val dataSources: ItemsDao,
         private val now: Now
     ) : Add, Read, ReadItem {
-        override fun add(value: String, correct: Int, incorrect: Int) {
+        override fun add(value: String, correct: Int, incorrect: Int): Long {
             val id = now.nowMillis()
             dataSources.add(ItemCache(id, value, correct, incorrect))
+            return id
         }
 
         override fun list(): List<Item> {
