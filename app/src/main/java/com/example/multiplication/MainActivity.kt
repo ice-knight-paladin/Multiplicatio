@@ -12,21 +12,11 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    lateinit var repository: Repository.Base
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        repository = Repository.Base(Core(this).dao(), Now.Base())
-        viewModelScope.launch(Dispatchers.IO) {
-            val id = repository.add("DDDD", 1, 0)
-            val itemUi = Item(id, "DDDD", 1, 0)
-            Log.d("MyTag", "${repository.item(id).text}")
-        }
-
 
         binding.btnMulti.setOnClickListener {
             startActivity(Intent(this, Multi::class.java))
@@ -36,6 +26,14 @@ class MainActivity : AppCompatActivity() {
         binding.btnStatic.setOnClickListener {
             startActivity(Intent(this, StaticsBD::class.java))
             finish()
+        }
+
+        val repository = Repository.Base(Core(this).dao(), Now.Base())
+
+        binding.btnClearTable.setOnClickListener{
+            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                repository.clear_table()
+            }
         }
     }
 }

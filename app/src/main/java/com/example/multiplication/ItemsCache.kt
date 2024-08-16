@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 data class ItemCache(
     @PrimaryKey @ColumnInfo(name = "id") val id: Long,
     @ColumnInfo(name = "text") val text: String,
-    @ColumnInfo(name = "correct") val correct: Int,
-    @ColumnInfo(name = "incorrect") val incorrect: Int
+    @ColumnInfo(name = "correct") var correct: Int,
+    @ColumnInfo(name = "incorrect") var incorrect: Int
 )
