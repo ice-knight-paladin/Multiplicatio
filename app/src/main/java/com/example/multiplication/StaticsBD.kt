@@ -34,16 +34,16 @@ class StaticsBD : AppCompatActivity() {
 
         Handler().postDelayed({
                 for (i in list) {
-                    val layout = LinearLayout(this)
-                    layout.orientation = LinearLayout.VERTICAL
-                    layout.layoutParams =
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.FILL_PARENT,
-                            LinearLayout.LayoutParams.FILL_PARENT
-                        )
-                    layout.id = k
-                    k++
-                    myAdapter.add(layout, i)
+//                    val layout = LinearLayout(this)
+//                    layout.orientation = LinearLayout.VERTICAL
+//                    layout.layoutParams =
+//                        LinearLayout.LayoutParams(
+//                            LinearLayout.LayoutParams.MATCH_PARENT,
+//                            LinearLayout.LayoutParams.WRAP_CONTENT
+//                        )
+//                    layout.id = k
+//                    k++
+                    myAdapter.add(LinearLayout(this), i)
                     Log.d("MyTag", "${i.text}")
                 }
             },

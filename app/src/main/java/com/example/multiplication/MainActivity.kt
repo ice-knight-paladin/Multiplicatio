@@ -28,12 +28,10 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        val repository = Repository.Base(Core(this).dao(), Now.Base())
+       // val repository = Repository.Base(Core(this).dao(), Now.Base())
 
         binding.btnClearTable.setOnClickListener{
-            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                repository.clear_table()
-            }
+            ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
         }
     }
 }

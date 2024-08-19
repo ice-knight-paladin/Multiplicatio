@@ -16,10 +16,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/textview"
         android:textSize="30sp"
+        android:padding="8dp"
         android:text = "name    correct     inccorect"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerview"
         android:orientation="vertical"
