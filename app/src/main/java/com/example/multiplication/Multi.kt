@@ -25,12 +25,14 @@ class Multi : AppCompatActivity() {
 
     private lateinit var repository: Repository.Base
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    //private var key:String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiBinding.inflate(layoutInflater)
         setContentView(binding.root)
+       // key = intent.extras!!.getString(Keys.KEY_MULT).toString()
 
         random_numbers()
 

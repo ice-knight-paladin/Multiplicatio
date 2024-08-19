@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.example.multiplication.Keys
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -19,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnMulti.setOnClickListener {
-            startActivity(Intent(this, Multi::class.java))
+            val intent = Intent(this, Multi::class.java)
+            //intent.putExtra(Keys.KEY_MULT, "+")
+            startActivity(intent)
             finish()
         }
 
@@ -28,10 +31,15 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-       // val repository = Repository.Base(Core(this).dao(), Now.Base())
-
         binding.btnClearTable.setOnClickListener{
             ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
+        }
+
+        binding.btnDivision.setOnClickListener{
+            val intent = Intent(this, Multi::class.java)
+            //.putExtra(Keys.KEY_MULT, "-")
+            startActivity(intent)
+            finish()
         }
     }
 }

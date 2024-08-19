@@ -37,19 +37,19 @@
         android:text="@string/multi"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_add"
+        app:layout_constraintBottom_toTopOf="@+id/btn_division"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title" />
 
     <Button
-        android:id="@+id/btn_add"
+        android:id="@+id/btn_division"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:alpha="0.8"
         android:backgroundTint="@color/yellow_0"
-        android:text="учим сложение"
+        android:text="@string/division"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/btn_static"
@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_clear_table"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_add"
+        app:layout_constraintTop_toBottomOf="@+id/btn_division"
         app:layout_constraintVertical_bias="0.2" />
 
     <Button
