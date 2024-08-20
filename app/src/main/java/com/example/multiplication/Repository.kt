@@ -8,7 +8,7 @@ interface Repository {
 
     interface ReadItem {
         fun item(id: Long): Item
-        fun item(text: String): ItemCache?
+        fun item(text: String): ItemCacheMulti?
     }
 
     interface Update {
@@ -20,12 +20,12 @@ interface Repository {
     }
 
     class Base(
-        private val dataSources: ItemsDao,
+        private val dataSources: ItemsDaoMulti,
         private val now: Now
     ) : Add, Read, ReadItem, Update {
         override fun add(value: String, correct: Int, incorrect: Int): Long {
             val id = now.nowMillis()
-            dataSources.add(ItemCache(id, value, correct, incorrect))
+            dataSources.add(ItemCacheMulti(id, value, correct, incorrect))
             return id
         }
 
@@ -40,7 +40,7 @@ interface Repository {
             return Item(itemCache.id, itemCache.text, itemCache.correct, itemCache.incorrect)
         }
 
-        override fun item(text: String): ItemCache? {
+        override fun item(text: String): ItemCacheMulti? {
             val itemCache = dataSources.item(text)
             if (itemCache == null) {
                 return null
@@ -54,7 +54,7 @@ interface Repository {
 
             if (i)
                 dataSources.update(
-                    ItemCache(
+                    ItemCacheMulti(
                         dataSources.item(text)!!.id,
                         text,
                         correct + 1,
@@ -63,7 +63,7 @@ interface Repository {
                 )
             else
                 dataSources.update(
-                    ItemCache(
+                    ItemCacheMulti(
                         dataSources.item(text)!!.id,
                         text,
                         correct,

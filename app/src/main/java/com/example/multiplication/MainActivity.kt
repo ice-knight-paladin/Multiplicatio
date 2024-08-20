@@ -2,14 +2,13 @@ package com.example.multiplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.multiplication.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.example.multiplication.Keys
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnMulti.setOnClickListener {
             val intent = Intent(this, Multi::class.java)
-            //intent.putExtra(Keys.KEY_MULT, "+")
             startActivity(intent)
             finish()
         }
@@ -31,13 +29,18 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnClearTable.setOnClickListener{
+//        val r = CoreMulti(this).daodiv()
+//        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+//            r.add(ItemCacheDiv(11L, "ddd", 1, 0))
+//            delay(10000)
+//        }
+
+        binding.btnClearTable.setOnClickListener {
             ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
         }
 
-        binding.btnDivision.setOnClickListener{
-            val intent = Intent(this, Multi::class.java)
-            //.putExtra(Keys.KEY_MULT, "-")
+        binding.btnDivision.setOnClickListener {
+            val intent = Intent(this, ActivityDiv::class.java)
             startActivity(intent)
             finish()
         }

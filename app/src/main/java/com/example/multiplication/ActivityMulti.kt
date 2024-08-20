@@ -49,7 +49,7 @@ class Multi : AppCompatActivity() {
                 binding.answer.text = binding.answer.text.toString()
                     .subSequence(0, binding.answer.text.toString().length - 1)
         }
-        repository = Repository.Base(Core(this).dao(), Now.Base())
+        repository = Repository.Base(Core(this).daomulti(), Now.Base())
 
         binding.btnOk.setOnClickListener {
             if (binding.answer.text.toString().length == (number_one * number_two).toString().length && binding.answer.text.toString()
@@ -96,7 +96,7 @@ class Multi : AppCompatActivity() {
     fun random_numbers() {
         number_one = (0..9).random()
         number_two = (0..9).random()
-        binding.expression.text = "$number_one * $number_two"
+        binding.expression.text = "$number_one * $number_two="
         binding.answer.text = ""
     }
 

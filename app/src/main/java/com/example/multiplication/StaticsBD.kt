@@ -3,6 +3,7 @@ package com.example.multiplication
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,7 @@ class StaticsBD : AppCompatActivity() {
         binding = ActivityStaticsBdBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val repository = Repository.Base(Core(this).dao(), Now.Base())
+        val repository = Repository.Base(Core(this).daomulti(), Now.Base())
         val myAdapter = MyItemsAdapter()
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
             list = repository.list()
@@ -32,7 +33,7 @@ class StaticsBD : AppCompatActivity() {
         binding.recyclerview.adapter = myAdapter
         var k = 0
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
                 for (i in list) {
 //                    val layout = LinearLayout(this)
 //                    layout.orientation = LinearLayout.VERTICAL
