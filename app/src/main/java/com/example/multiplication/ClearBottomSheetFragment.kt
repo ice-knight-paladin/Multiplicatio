@@ -23,7 +23,7 @@ class ClearBottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_cle
         view.findViewById<Button>(R.id.btn_yes).setOnClickListener {
             val repository =
                 context?.let { it1 -> Core(it1).daomulti() }
-                    ?.let { it2 -> Repository.Base(it2, Now.Base()) }
+                    ?.let { it2 -> Repository.BaseMulti(it2, Now.Base()) }
             CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
                 repository?.clear_table()
             }

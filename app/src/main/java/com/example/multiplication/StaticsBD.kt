@@ -22,7 +22,7 @@ class StaticsBD : AppCompatActivity() {
         binding = ActivityStaticsBdBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val repository = Repository.Base(Core(this).daomulti(), Now.Base())
+        val repository = Repository.BaseMulti(Core(this).daomulti(), Now.Base())
         val myAdapter = MyItemsAdapter()
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
             list = repository.list()

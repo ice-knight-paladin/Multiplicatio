@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -17,24 +18,24 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 
-class Multi : AppCompatActivity() {
+class ActivityMulti : AppCompatActivity() {
     private lateinit var binding: ActivityMultiBinding
 
-    private var number_one: Int = 0
-    private var number_two: Int = 0
+    private var start: Int = 0
+    private var end: Int = 9
 
-    private lateinit var repository: Repository.Base
+    private val multi = NumberMulti(start, end)
+
+    private lateinit var repository: Repository.BaseMulti
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    //private var key:String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-       // key = intent.extras!!.getString(Keys.KEY_MULT).toString()
 
-        random_numbers()
+        multi.show(binding.answer, binding.expression)
 
         val source = ImageDecoder.createSource(
             resources, R.drawable.win
@@ -45,59 +46,32 @@ class Multi : AppCompatActivity() {
         binding.win.visibility = View.INVISIBLE
 
         binding.btnDel.setOnClickListener {
-            if (binding.answer.text.toString().length != 0)
-                binding.answer.text = binding.answer.text.toString()
-                    .subSequence(0, binding.answer.text.toString().length - 1)
+            multi.show_delete(binding.answer)
         }
-        repository = Repository.Base(Core(this).daomulti(), Now.Base())
+
+        repository = Repository.BaseMulti(Core(this).daomulti(), Now.Base())
 
         binding.btnOk.setOnClickListener {
-            if (binding.answer.text.toString().length == (number_one * number_two).toString().length && binding.answer.text.toString()
-                    .toInt() == number_one * number_two
-            ) {
+            if (multi.ischeak(binding.answer.text.toString())) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    isItem(true)
+                    multi.Item(true, repository)
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
-                random_numbers()
+
+                multi.show(binding.answer, binding.expression)
+
                 binding.win.visibility = View.VISIBLE
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     binding.win.visibility = View.INVISIBLE
-                }, 2000)
+                }, 1500)
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 viewModelScope.launch(Dispatchers.IO) {
-                    isItem(false)
+                    multi.Item(false, repository)
                 }
             }
         }
-    }
-
-    suspend fun isItem(i: Boolean, ) {
-        if (repository.item(
-                "${min(number_one, number_two)} * ${
-                    max(
-                        number_one,
-                        number_two
-                    )
-                }"
-            ) == null
-        ) {
-            if (i)
-                repository.add("${min(number_one, number_two)} * ${max(number_one, number_two)}", 1, 0)
-            else
-                repository.add("${min(number_one, number_two)} * ${max(number_one, number_two)}", 0, 1)
-        } else {
-            repository.update("${min(number_one, number_two)} * ${max(number_one, number_two)}", i)
-        }
-    }
-
-    fun random_numbers() {
-        number_one = (0..9).random()
-        number_two = (0..9).random()
-        binding.expression.text = "$number_one * $number_two="
-        binding.answer.text = ""
     }
 
 

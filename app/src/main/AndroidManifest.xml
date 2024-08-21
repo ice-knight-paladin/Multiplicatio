@@ -22,7 +22,7 @@
             android:name=".StaticsBD"
             android:exported="false" />
         <activity
-            android:name=".Multi"
+            android:name=".ActivityMulti"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
