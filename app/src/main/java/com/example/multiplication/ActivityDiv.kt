@@ -24,8 +24,10 @@ class ActivityDiv : AppCompatActivity() {
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
 
-    private var number_one: Int = 0
-    private var number_two: Int = 0
+    private var start: Int = 1
+    private var end: Int = 9
+
+    private var div = NumberDiv(start, end)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,7 @@ class ActivityDiv : AppCompatActivity() {
         setContentView(binding.root)
         repository = Repository.BaseDiv(Core(this).daodiv(), Now.Base())
 
-        random_numbers()
+        div.show(binding.answer, binding.expression)
 
         val source = ImageDecoder.createSource(
             resources, R.drawable.win
@@ -43,50 +45,33 @@ class ActivityDiv : AppCompatActivity() {
         (drawable as? AnimatedImageDrawable)?.start()
         binding.win.visibility = View.INVISIBLE
 
+
         binding.btnDel.setOnClickListener {
-            if (binding.answer.text.toString().length != 0)
-                binding.answer.text = binding.answer.text.toString()
-                    .subSequence(0, binding.answer.text.toString().length - 1)
+            div.show_delete(binding.answer)
         }
 
 
         binding.btnOk.setOnClickListener {
-            if (binding.answer.text.toString().length == (number_one).toString().length && binding.answer.text.toString().toInt() == number_one) {
+            if (div.ischeak(binding.answer.text.toString())) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    isItem(true)
+                    div.Item(true, repository)
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
-                random_numbers()
+
+                div.show(binding.answer, binding.expression)
+
                 binding.win.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
                     binding.win.visibility = View.INVISIBLE
-                }, 2000)
+                }, 1000)
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 viewModelScope.launch(Dispatchers.IO) {
-                    isItem(false)
+                    div.Item(false, repository)
                 }
             }
         }
-    }
-
-    suspend fun isItem(i: Boolean, ) {
-        if (repository.item("${number_one*number_two} / ${number_two}") == null) {
-            if (i)
-                repository.add("${number_one*number_two} / ${number_two}}", 1, 0)
-            else
-                repository.add("${number_one*number_two} / ${number_two}}", 0, 1)
-        } else {
-            repository.update("${number_one*number_two} / ${number_two}}", i)
-        }
-    }
-
-    fun random_numbers() {
-        number_one = (0..9).random()
-        number_two = (1..9).random()
-        binding.expression.text = "${number_one * number_two} / $number_two="
-        binding.answer.text = ""
     }
 
     override fun onBackPressed() {
@@ -98,5 +83,17 @@ class ActivityDiv : AppCompatActivity() {
     fun click_number(view: View) {
         if (binding.answer.text.toString().length <= 5)
             binding.answer.text = binding.answer.text.toString() + (view as Button).text
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        binding.answer.text = savedInstanceState.getString(Keys.KEY_ANSWER)
+        binding.expression.text = savedInstanceState.getString(Keys.KEY_EXP)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(Keys.KEY_ANSWER, binding.answer.text.toString())
+        outState.putString(Keys.KEY_EXP, binding.expression.text.toString())
     }
 }

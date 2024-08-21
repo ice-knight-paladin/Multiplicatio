@@ -21,6 +21,43 @@ abstract class NumberClass(
 
 }
 
+class NumberDiv(start: Int, end: Int) : NumberClass(start, end) {
+    private var div = number_one
+
+    override fun ischeak(answer: String):Boolean {
+        return answer.length == div.toString().length && answer.toInt() == div
+    }
+
+    override fun random(){
+        super.random()
+        div = number_one
+    }
+
+
+    fun Item(i: Boolean, repository: Repository.BaseDiv) {
+        if (repository.item("${number_one*number_two} / ${number_two}") == null) {
+            if (i)
+                repository.add("${number_one*number_two} / ${number_two}", 1, 0)
+            else
+                repository.add("${number_one*number_two} / ${number_two}", 0, 1)
+        } else {
+            repository.update("${number_one*number_two} / ${number_two}", i)
+        }
+    }
+
+    fun show(answer: TextView, expression:TextView){
+        random()
+        answer.text = ""
+        expression.text = "${number_one * number_two} / $number_two="
+    }
+
+    fun show_delete(answer: TextView){
+        if (answer.text.toString().length != 0){
+            answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
+        }
+    }
+}
+
 class NumberMulti(start: Int, end: Int) : NumberClass(start, end) {
     private var multi = number_one * number_two
 

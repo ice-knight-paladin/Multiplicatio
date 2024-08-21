@@ -1,6 +1,6 @@
 package com.example.multiplication
 
 object Keys {
-    const val KEY_MULT = "+"
-    const val KEY_DIV = "-"
+    const val KEY_ANSWER = "+"
+    const val KEY_EXP = "-"
 }

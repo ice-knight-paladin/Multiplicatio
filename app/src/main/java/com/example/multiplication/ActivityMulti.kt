@@ -15,8 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlin.math.max
-import kotlin.math.min
 
 class ActivityMulti : AppCompatActivity() {
     private lateinit var binding: ActivityMultiBinding
@@ -63,7 +61,7 @@ class ActivityMulti : AppCompatActivity() {
                 binding.win.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
                     binding.win.visibility = View.INVISIBLE
-                }, 1500)
+                }, 1000)
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
@@ -84,5 +82,17 @@ class ActivityMulti : AppCompatActivity() {
     fun click_number(view: View) {
         if (binding.answer.text.toString().length <= 5)
             binding.answer.text = binding.answer.text.toString() + (view as Button).text
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        binding.answer.text = savedInstanceState.getString(Keys.KEY_ANSWER)
+        binding.expression.text = savedInstanceState.getString(Keys.KEY_EXP)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(Keys.KEY_ANSWER, binding.answer.text.toString())
+        outState.putString(Keys.KEY_EXP, binding.expression.text.toString())
     }
 }
