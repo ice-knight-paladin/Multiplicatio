@@ -27,7 +27,7 @@ interface Repository {
     class BaseMulti(
         private val dataSources: ItemsDaoMulti,
         private val now: Now
-    ) : Add, Read, ReadItemMulti, Update {
+    ) : Add, Read, ReadItemMulti, Update, Repository {
         override fun add(value: String, correct: Int, incorrect: Int): Long {
             val id = now.nowMillis()
             dataSources.add(ItemCacheMulti(id, value, correct, incorrect))
@@ -85,7 +85,7 @@ interface Repository {
     class BaseDiv(
         private val dataSources: ItemsDaoDiv,
         private val now: Now
-    ) : Add, Read, ReadItemDiv, Update {
+    ) : Add, Read, ReadItemDiv, Update, Repository {
         override fun add(value: String, correct: Int, incorrect: Int): Long {
             val id = now.nowMillis()
             dataSources.add(ItemCacheDiv(id, value, correct, incorrect))

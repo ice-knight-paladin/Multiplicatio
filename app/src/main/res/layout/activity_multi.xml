@@ -7,7 +7,7 @@
     android:background="@drawable/main_background"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ActivityMulti">
+    tools:context=".ActivityType">
 
     <ImageView
         android:id="@+id/win"

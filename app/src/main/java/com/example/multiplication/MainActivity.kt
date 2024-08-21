@@ -13,8 +13,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         binding.btnMulti.setOnClickListener {
-            val intent = Intent(this, ActivityMulti::class.java)
+            val intent = Intent(this, ActivityType::class.java)
+            intent.putExtra(Keys.KEY_TYPE, "multi")
             startActivity(intent)
             finish()
         }
@@ -24,18 +26,13 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-//        val r = CoreMulti(this).daodiv()
-//        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-//            r.add(ItemCacheDiv(11L, "ddd", 1, 0))
-//            delay(10000)
-//        }
-
         binding.btnClearTable.setOnClickListener {
             ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
         }
 
         binding.btnDivision.setOnClickListener {
-            val intent = Intent(this, ActivityDiv::class.java)
+            val intent = Intent(this, ActivityType::class.java)
+            intent.putExtra(Keys.KEY_TYPE, "div")
             startActivity(intent)
             finish()
         }

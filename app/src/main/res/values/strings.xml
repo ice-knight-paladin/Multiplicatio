@@ -3,4 +3,8 @@
     <string name="multi">учим умножение</string>
     <string name="table_title">математика</string>
     <string name="division">учим деление</string>
+    <string-array name="namestatic">
+        <item>деление</item>
+        <item>умножение</item>
+    </string-array>
 </resources>

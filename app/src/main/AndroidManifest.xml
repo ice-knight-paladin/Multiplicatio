@@ -13,16 +13,10 @@
         android:theme="@style/Theme.Multiplication"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityDiv"
-            android:exported="false" />
-        <activity
-            android:name=".ClearTable"
-            android:exported="false" />
-        <activity
             android:name=".StaticsBD"
             android:exported="false" />
         <activity
-            android:name=".ActivityMulti"
+            android:name=".ActivityType"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

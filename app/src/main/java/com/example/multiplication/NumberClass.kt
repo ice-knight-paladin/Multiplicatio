@@ -72,21 +72,13 @@ class NumberMulti(start: Int, end: Int) : NumberClass(start, end) {
 
 
     fun Item(i: Boolean, repository: Repository.BaseMulti) {
-        if (repository.item(
-                "${min(number_one, number_two)} * ${
-                    max(
-                        number_one,
-                        number_two
-                    )
-                }"
-            ) == null
-        ) {
+        if     (repository.item("${min(number_one, number_two)} * ${max(number_one, number_two)}") == null) {
             if (i)
                 repository.add("${min(number_one, number_two)} * ${max(number_one, number_two)}", 1, 0)
             else
                 repository.add("${min(number_one, number_two)} * ${max(number_one, number_two)}", 0, 1)
         } else {
-            repository.update("${min(number_one, number_two)} * ${max(number_one, number_two)}", i)
+              repository.update("${min(number_one, number_two)} * ${max(number_one, number_two)}", i)
         }
     }
 

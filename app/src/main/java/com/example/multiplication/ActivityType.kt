@@ -10,32 +10,40 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.multiplication.databinding.ActivityDivBinding
+import com.example.multiplication.databinding.ActivityMultiBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlin.math.max
-import kotlin.math.min
 
-class ActivityDiv : AppCompatActivity() {
-    private lateinit var binding : ActivityDivBinding
-    private lateinit var repository: Repository.BaseDiv
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
+class ActivityType : AppCompatActivity() {
+    private lateinit var binding: ActivityMultiBinding
 
     private var start: Int = 1
     private var end: Int = 9
 
-    private var div = NumberDiv(start, end)
+    private lateinit var multi: NumberClass
+
+    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private lateinit var repository: Repository
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDivBinding.inflate(layoutInflater)
+        binding = ActivityMultiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        repository = Repository.BaseDiv(Core(this).daodiv(), Now.Base())
+        if (cheak_type()) {
+            repository = Repository.BaseMulti(Core(this).daomulti(), Now.Base())
+            multi = NumberMulti(start, end)
+        } else {
+            repository = Repository.BaseDiv(Core(this).daodiv(), Now.Base())
+            multi = NumberDiv(start, end)
+        }
 
-        div.show(binding.answer, binding.expression)
+        if (cheak_type())(multi as NumberMulti).show(binding.answer, binding.expression)
+        else (multi as NumberDiv).show(binding.answer, binding.expression)
+
+
 
         val source = ImageDecoder.createSource(
             resources, R.drawable.win
@@ -45,20 +53,23 @@ class ActivityDiv : AppCompatActivity() {
         (drawable as? AnimatedImageDrawable)?.start()
         binding.win.visibility = View.INVISIBLE
 
-
         binding.btnDel.setOnClickListener {
-            div.show_delete(binding.answer)
+            if (cheak_type()) (multi as NumberMulti).show_delete(binding.answer)
+            else (multi as NumberDiv).show_delete(binding.answer)
         }
 
 
+
         binding.btnOk.setOnClickListener {
-            if (div.ischeak(binding.answer.text.toString())) {
+            if (multi.ischeak(binding.answer.text.toString())) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    div.Item(true, repository)
+                    if (cheak_type()) (multi as NumberMulti).Item(true, repository as Repository.BaseMulti)
+                    else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
 
-                div.show(binding.answer, binding.expression)
+                if (cheak_type())(multi as NumberMulti).show(binding.answer, binding.expression)
+                else (multi as NumberDiv).show(binding.answer, binding.expression)
 
                 binding.win.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -68,11 +79,21 @@ class ActivityDiv : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 viewModelScope.launch(Dispatchers.IO) {
-                    div.Item(false, repository)
+                    if (cheak_type()) (multi as NumberMulti).Item(false, repository as Repository.BaseMulti)
+                    else (multi as NumberDiv).Item(false, repository as Repository.BaseDiv)
                 }
             }
         }
     }
+
+    fun cheak_type(): Boolean {
+        if (intent.extras?.getString(Keys.KEY_TYPE) == "multi") {
+            return true
+        } else {
+            return false
+        }
+    }
+
 
     override fun onBackPressed() {
         super.onBackPressed()
