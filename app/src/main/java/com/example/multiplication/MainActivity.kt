@@ -26,15 +26,19 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnClearTable.setOnClickListener {
-            ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
-        }
+//        binding.btnClearTable.setOnClickListener {
+//            ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")
+//        }
 
         binding.btnDivision.setOnClickListener {
             val intent = Intent(this, ActivityType::class.java)
             intent.putExtra(Keys.KEY_TYPE, "div")
             startActivity(intent)
             finish()
+        }
+
+        binding.btnOption.setOnClickListener{
+            OptionStartSheetDialogFragment().show(supportFragmentManager, "createOptionFragment")
         }
     }
 }

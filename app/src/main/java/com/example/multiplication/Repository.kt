@@ -1,5 +1,7 @@
 package com.example.multiplication
 
+import android.content.Context
+
 interface Repository {
 
     interface Add {
@@ -24,7 +26,12 @@ interface Repository {
         fun list(): List<Item>
     }
 
-    class BaseMulti(
+    interface BaseRepository {
+        fun getRepository(context: Context): Repository
+    }
+
+
+    open class BaseMulti(
         private val dataSources: ItemsDaoMulti,
         private val now: Now
     ) : Add, Read, ReadItemMulti, Update, Repository {

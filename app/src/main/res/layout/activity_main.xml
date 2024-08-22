@@ -16,6 +16,20 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <TextView
+        android:id="@+id/btn_option"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_option"
+        android:drawableTint="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/btn_multi"
+        app:layout_constraintEnd_toStartOf="@+id/text_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06" />
+
+    <TextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,12 +42,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_multi"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:alpha="0.8"
         android:background="@drawable/btn_style"
+        android:gravity="center"
         android:text="@string/multi"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -43,49 +58,68 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_division"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:alpha="0.8"
-        android:backgroundTint="@color/yellow_0"
+        android:background="@drawable/btn_style"
+        android:gravity="center"
         android:text="@string/division"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/btn_static"
+        app:layout_constraintBottom_toTopOf="@id/btn_plus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_multi"
         app:layout_constraintVertical_bias="0.2" />
 
-    <Button
-        android:id="@+id/btn_static"
+    <TextView
+        android:id="@+id/btn_plus"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:alpha="0.8"
-        android:backgroundTint="@color/green"
-        android:text="статистика"
+        android:background="@drawable/btn_style"
+        android:gravity="center"
+        android:text="@string/plus"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/btn_clear_table"
+        app:layout_constraintBottom_toTopOf="@id/btn_minus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_division"
         app:layout_constraintVertical_bias="0.2" />
 
-    <Button
-        android:id="@+id/btn_clear_table"
+    <TextView
+        android:id="@+id/btn_minus"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:alpha="0.8"
-        android:backgroundTint="@color/green"
-        android:text="очистка статистики"
+        android:background="@drawable/btn_style"
+        android:gravity="center"
+        android:text="@string/minus"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/btn_static"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_plus"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <TextView
+        android:id="@+id/btn_static"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:background="@drawable/btn_style"
+        android:gravity="center"
+        android:text="статистика"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_static"
+        app:layout_constraintTop_toBottomOf="@+id/btn_minus"
         app:layout_constraintVertical_bias="0.2" />
 
 

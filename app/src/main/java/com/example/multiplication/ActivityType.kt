@@ -1,5 +1,6 @@
 package com.example.multiplication
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
@@ -32,17 +33,17 @@ class ActivityType : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (cheak_type()) {
-            repository = Repository.BaseMulti(Core(this).daomulti(), Now.Base())
+
+        repository = RepositoryFactory.createRepository(check_type()).getRepository(this)
+
+        if (check_type()) {
             multi = NumberMulti(start, end)
         } else {
-            repository = Repository.BaseDiv(Core(this).daodiv(), Now.Base())
             multi = NumberDiv(start, end)
         }
 
-        if (cheak_type())(multi as NumberMulti).show(binding.answer, binding.expression)
+        if (check_type())(multi as NumberMulti).show(binding.answer, binding.expression)
         else (multi as NumberDiv).show(binding.answer, binding.expression)
-
 
 
         val source = ImageDecoder.createSource(
@@ -54,7 +55,7 @@ class ActivityType : AppCompatActivity() {
         binding.win.visibility = View.INVISIBLE
 
         binding.btnDel.setOnClickListener {
-            if (cheak_type()) (multi as NumberMulti).show_delete(binding.answer)
+            if (check_type()) (multi as NumberMulti).show_delete(binding.answer)
             else (multi as NumberDiv).show_delete(binding.answer)
         }
 
@@ -63,12 +64,12 @@ class ActivityType : AppCompatActivity() {
         binding.btnOk.setOnClickListener {
             if (multi.ischeak(binding.answer.text.toString())) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (cheak_type()) (multi as NumberMulti).Item(true, repository as Repository.BaseMulti)
+                    if (check_type()) (multi as NumberMulti).Item(true, repository as Repository.BaseMulti)
                     else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
 
-                if (cheak_type())(multi as NumberMulti).show(binding.answer, binding.expression)
+                if (check_type())(multi as NumberMulti).show(binding.answer, binding.expression)
                 else (multi as NumberDiv).show(binding.answer, binding.expression)
 
                 binding.win.visibility = View.VISIBLE
@@ -79,14 +80,14 @@ class ActivityType : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (cheak_type()) (multi as NumberMulti).Item(false, repository as Repository.BaseMulti)
+                    if (check_type()) (multi as NumberMulti).Item(false, repository as Repository.BaseMulti)
                     else (multi as NumberDiv).Item(false, repository as Repository.BaseDiv)
                 }
             }
         }
     }
 
-    fun cheak_type(): Boolean {
+    fun check_type(): Boolean {
         if (intent.extras?.getString(Keys.KEY_TYPE) == "multi") {
             return true
         } else {
@@ -116,5 +117,19 @@ class ActivityType : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(Keys.KEY_ANSWER, binding.answer.text.toString())
         outState.putString(Keys.KEY_EXP, binding.expression.text.toString())
+    }
+
+
+
+    class MultiRepository : Repository.BaseRepository {
+        override fun getRepository(context: Context): Repository {
+            return Repository.BaseMulti(Core(context).daomulti(), Now.Base())
+        }
+    }
+
+    class DivRepository : Repository.BaseRepository {
+        override fun getRepository(context: Context): Repository {
+            return Repository.BaseDiv(Core(context).daodiv(), Now.Base())
+        }
     }
 }
