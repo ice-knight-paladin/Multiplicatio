@@ -8,6 +8,8 @@ import com.example.multiplication.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private var lastClick = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,7 +39,12 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+
         binding.btnOption.setOnClickListener{
+            if (System.currentTimeMillis() - lastClick < 1000){
+                return@setOnClickListener
+            }
+            lastClick = System.currentTimeMillis()
             OptionStartSheetDialogFragment().show(supportFragmentManager, "createOptionFragment")
         }
     }

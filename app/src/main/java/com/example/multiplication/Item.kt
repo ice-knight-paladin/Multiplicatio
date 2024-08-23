@@ -6,3 +6,9 @@ data class Item(
     var correct: Int,
     var incorrect: Int
 )
+
+data class Item_Save(
+    var id:Long,
+    var text: String,
+    var number: Int,
+)

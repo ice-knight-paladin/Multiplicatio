@@ -53,3 +53,22 @@ interface ItemsDaoDiv {
     @Query("DELETE FROM item_table_div")
     fun clear_table()
 }
+
+@Dao
+interface ItemsDaoSave {
+    @Query("SELECT * FROM item_table_save")
+    fun list(): List<ItemCacheSave>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun add(item: ItemCacheSave)
+
+    @Update
+    fun update(item:ItemCacheSave)
+
+    @Query("SELECT * FROM item_table_save WHERE id = :id")
+    fun item(id: Long): ItemCacheSave
+
+    @Query("SELECT * FROM item_table_save WHERE text = :text")
+    fun item(text:String) :ItemCacheSave?
+
+}

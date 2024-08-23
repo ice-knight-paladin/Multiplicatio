@@ -18,6 +18,12 @@ interface Repository {
         fun item(text: String): ItemCacheDiv?
     }
 
+    interface ReadItemSave {
+        fun item(id: Long): Item_Save
+        fun item(text: String): ItemCacheSave?
+    }
+
+
     interface Update {
         fun update(text: String, i: Boolean)
     }
@@ -144,6 +150,46 @@ interface Repository {
 
         fun clear_table() {
             dataSources.clear_table()
+        }
+    }
+
+    class BaseSave(
+        private val dataSources: ItemsDaoSave,
+        private val now: Now
+    ) : ReadItemSave, Repository {
+        fun add(text: String, number: Int): Long {
+            val id = now.nowMillis()
+            dataSources.add(ItemCacheSave(id, text, number))
+            return id
+        }
+
+        fun list(): List<Item_Save> {
+            return dataSources.list().map {
+                Item_Save(it.id, it.text, it.number)
+            }
+        }
+
+        override fun item(id: Long): Item_Save {
+            val itemCache = dataSources.item(id)
+            return Item_Save(itemCache.id, itemCache.text, itemCache.number)
+        }
+
+        override fun item(text: String): ItemCacheSave? {
+            val itemCache = dataSources.item(text)
+            if (itemCache == null) {
+                return null
+            }
+            return itemCache
+        }
+
+        fun update(number: Int, text: String) {
+            dataSources.update(
+                ItemCacheSave(
+                    dataSources.item(text)!!.id,
+                    text,
+                    number,
+                )
+            )
         }
     }
 }

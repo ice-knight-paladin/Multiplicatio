@@ -25,8 +25,9 @@ class ActivityType : AppCompatActivity() {
 
     private lateinit var multi: NumberClass
 
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    //private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var repository: Repository
+    private lateinit var repository_save: Repository.BaseSave
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,15 +36,47 @@ class ActivityType : AppCompatActivity() {
         setContentView(binding.root)
 
         repository = RepositoryFactory.createRepository(check_type()).getRepository(this)
+        repository_save = Repository.BaseSave(Core(this).daosave(), Now.Base())
 
-        if (check_type()) {
-            multi = NumberMulti(start, end)
-        } else {
-            multi = NumberDiv(start, end)
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+            if (check_type()) {
+                if (repository_save.item("multimin") == null) {
+                    repository_save.add("multimin", 1)
+                    start = repository_save.item("multimin")!!.number
+                } else {
+                    start = repository_save.item("multimin")!!.number
+                }
+                if (repository_save.item("multimax") == null) {
+                    repository_save.add("multimax", 9)
+                    end = repository_save.item("multimax")!!.number
+                } else {
+                    end = repository_save.item("multimax")!!.number
+                }
+                multi = NumberMulti(start, end)
+            } else {
+
+                if (repository_save.item("divmin") == null) {
+                    repository_save.add("divmin", 1)
+                    start = repository_save.item("divmin")!!.number
+                } else {
+                    start = repository_save.item("divmin")!!.number
+                }
+                if (repository_save.item("divmax") == null) {
+                    repository_save.add("divmax", 9)
+                    end = repository_save.item("divmax")!!.number
+                } else {
+                    end = repository_save.item("divmax")!!.number
+                }
+                multi = NumberDiv(start, end)
+            }
+
         }
-
-        if (check_type())(multi as NumberMulti).show(binding.answer, binding.expression)
-        else (multi as NumberDiv).show(binding.answer, binding.expression)
+        Handler().postDelayed(
+            {
+                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
+                else (multi as NumberDiv).show(binding.answer, binding.expression)
+            }, 500
+        )
 
 
         val source = ImageDecoder.createSource(
@@ -63,13 +96,16 @@ class ActivityType : AppCompatActivity() {
 
         binding.btnOk.setOnClickListener {
             if (multi.ischeak(binding.answer.text.toString())) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(true, repository as Repository.BaseMulti)
+                CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                    if (check_type()) (multi as NumberMulti).Item(
+                        true,
+                        repository as Repository.BaseMulti
+                    )
                     else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
 
-                if (check_type())(multi as NumberMulti).show(binding.answer, binding.expression)
+                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
                 else (multi as NumberDiv).show(binding.answer, binding.expression)
 
                 binding.win.visibility = View.VISIBLE
@@ -79,8 +115,11 @@ class ActivityType : AppCompatActivity() {
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
-                viewModelScope.launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(false, repository as Repository.BaseMulti)
+                CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                    if (check_type()) (multi as NumberMulti).Item(
+                        false,
+                        repository as Repository.BaseMulti
+                    )
                     else (multi as NumberDiv).Item(false, repository as Repository.BaseDiv)
                 }
             }
@@ -120,7 +159,6 @@ class ActivityType : AppCompatActivity() {
     }
 
 
-
     class MultiRepository : Repository.BaseRepository {
         override fun getRepository(context: Context): Repository {
             return Repository.BaseMulti(Core(context).daomulti(), Now.Base())
@@ -132,4 +170,5 @@ class ActivityType : AppCompatActivity() {
             return Repository.BaseDiv(Core(context).daodiv(), Now.Base())
         }
     }
+
 }

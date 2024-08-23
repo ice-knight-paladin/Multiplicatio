@@ -19,3 +19,10 @@ data class ItemCacheDiv(
     @ColumnInfo(name = "correct") var correct: Int,
     @ColumnInfo(name = "incorrect") var incorrect: Int
 )
+
+@Entity(tableName = "item_table_save")
+data class ItemCacheSave(
+    @PrimaryKey @ColumnInfo(name = "id") val id: Long,
+    @ColumnInfo(name = "text") val text: String,
+    @ColumnInfo(name = "number") var number: Int,
+)

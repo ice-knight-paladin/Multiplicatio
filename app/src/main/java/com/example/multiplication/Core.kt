@@ -12,24 +12,11 @@ class Core(
             ItemsDataBaseMulti::class.java,
             "items_database_multi"
         )
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
     }
 
     fun daomulti() = dataBase.itemsDaoMulti()
     fun daodiv() = dataBase.itemsDaoDiv()
+    fun daosave() = dataBase.itemsDaoSave()
 }
-
-//class CoreDiv(
-//    private val context: Context
-//) {
-//    private val dataBase by lazy {
-//        Room.databaseBuilder(
-//            context,
-//            ItemsDataBaseDiv::class.java,
-//            "items_database_multi"
-//        ).build()
-//    }
-//
-//    fun dao() = dataBase.itemsDaoDiv()
-//}
