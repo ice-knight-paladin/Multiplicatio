@@ -1,6 +1,7 @@
 package com.example.multiplication
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
@@ -9,11 +10,16 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import com.example.multiplication.Option.divmax
+import com.example.multiplication.Option.divmin
+import com.example.multiplication.Option.multimax
+import com.example.multiplication.Option.multimin
 import com.google.android.material.internal.ViewUtils.hideKeyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 
 class OptionStartSheetDialogFragment : DialogFragment(R.layout.fragment_option) {
@@ -64,30 +70,30 @@ class OptionStartSheetDialogFragment : DialogFragment(R.layout.fragment_option) 
 
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-            numbers = listOf(repositorySave?.item("multimin")?.number.toString(),
-                repositorySave?.item("multimax")?.number.toString(),
-                repositorySave?.item("divmin")?.number.toString(),
-                repositorySave?.item("divmax")?.number.toString())
+            numbers = listOf(repositorySave?.item(multimin)?.number.toString(),
+                repositorySave?.item(multimax)?.number.toString(),
+                repositorySave?.item(divmin)?.number.toString(),
+                repositorySave?.item(divmax)?.number.toString())
             minmulti.setText(numbers[0])
             maxmulti.setText(numbers[1])
             mindiv.setText(numbers[2])
             maxdiv.setText(numbers[3])
 
-            if (repositorySave?.item("multimin") == null) {
-                repositorySave?.add("multimin", 1)
-                minmulti.setText(repositorySave?.item("multimin")?.number.toString())
+            if (repositorySave?.item(multimin) == null) {
+                repositorySave?.add(multimin, 1)
+                minmulti.setText(repositorySave?.item(multimin)?.number.toString())
             }
-            if (repositorySave?.item("multimax") == null) {
-                repositorySave?.add("multimax", 9)
-                maxmulti.setText(repositorySave?.item("multimax")?.number.toString())
+            if (repositorySave?.item(multimax) == null) {
+                repositorySave?.add(multimax, 9)
+                maxmulti.setText(repositorySave?.item(multimax)?.number.toString())
             }
-            if (repositorySave?.item("divmin") == null) {
-                repositorySave?.add("divmin", 1)
-                mindiv.setText(repositorySave?.item("divmin")?.number.toString())
+            if (repositorySave?.item(divmin) == null) {
+                repositorySave?.add(divmin, 1)
+                mindiv.setText(repositorySave?.item(divmin)?.number.toString())
             }
-            if (repositorySave?.item("divmax") == null) {
-                repositorySave?.add("divmax", 9)
-                maxdiv.setText(repositorySave?.item("divmax")?.number.toString())
+            if (repositorySave?.item(divmax) == null) {
+                repositorySave?.add(divmax, 9)
+                maxdiv.setText(repositorySave?.item(divmax)?.number.toString())
             }
         }
 
@@ -103,6 +109,15 @@ class OptionStartSheetDialogFragment : DialogFragment(R.layout.fragment_option) 
             maxmulti.setText(numbers[1])
             mindiv.setText(numbers[2])
             maxdiv.setText(numbers[3])
+        }
+
+        view.findViewById<TextView>(R.id.show_static).setOnClickListener{
+            startActivity(Intent(context, StaticsBD::class.java))
+            dismiss()
+        }
+
+        view.findViewById<TextView>(R.id.clear_static).setOnClickListener{
+            ClearBottomSheetFragment().show(parentFragmentManager, "createClearFragment")
         }
     }
 

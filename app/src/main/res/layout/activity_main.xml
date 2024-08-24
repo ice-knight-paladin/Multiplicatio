@@ -15,6 +15,7 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
+
     <TextView
         android:id="@+id/btn_option"
         android:layout_width="40dp"
@@ -97,25 +98,11 @@
         android:text="@string/minus"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/btn_static"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_plus" />
 
-    <TextView
-        android:id="@+id/btn_static"
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:alpha="0.8"
-        android:background="@drawable/btn_style"
-        android:gravity="center"
-        android:text="статистика"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_minus" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

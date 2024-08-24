@@ -4,6 +4,11 @@
         <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
+    <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/style_progress_bar</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">16dp</item>
+    </style>
 
 <!--    <style name="FullScreenDialogTheme" parent="Theme.AppCompat.Dialog">-->
 <!--        <item name="android:windowIsFloating">false</item>-->

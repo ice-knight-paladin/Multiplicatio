@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnStatic.setOnClickListener {
-            startActivity(Intent(this, StaticsBD::class.java))
-            finish()
-        }
+//        binding.btnStatic.setOnClickListener {
+//            startActivity(Intent(this, StaticsBD::class.java))
+//            finish()
+//        }
 
 //        binding.btnClearTable.setOnClickListener {
 //            ClearBottomSheetFragment().show(supportFragmentManager, "createClearFragment")

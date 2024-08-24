@@ -9,8 +9,3 @@ abstract class ItemsDataBaseMulti : RoomDatabase() {
     abstract fun itemsDaoDiv(): ItemsDaoDiv
     abstract fun itemsDaoSave():ItemsDaoSave
 }
-
-//@Database(entities = [ItemCacheMulti::class, ItemCacheDiv::class], version = 1)
-//abstract class ItemsDataBaseDiv : RoomDatabase() {
-//    abstract fun itemsDaoDiv(): ItemsDaoDiv
-//}
