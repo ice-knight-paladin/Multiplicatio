@@ -5,8 +5,5 @@
     <string name="division">учим деление</string>
     <string name="plus">учим сложение</string>
     <string name="minus">учим вычитание</string>
-    <string-array name="namestatic">
-        <item>деление</item>
-        <item>умножение</item>
-    </string-array>
+    <string name="levels">уровни</string>
 </resources>

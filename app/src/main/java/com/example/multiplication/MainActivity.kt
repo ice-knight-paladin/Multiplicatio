@@ -47,5 +47,10 @@ class MainActivity : AppCompatActivity() {
             lastClick = System.currentTimeMillis()
             OptionStartSheetDialogFragment().show(supportFragmentManager, "createOptionFragment")
         }
+
+        binding.btnLevels.setOnClickListener{
+            startActivity(Intent(this, LevelsActivity::class.java))
+            finish()
+        }
     }
 }
