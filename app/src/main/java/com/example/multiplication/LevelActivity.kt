@@ -11,24 +11,25 @@ import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.multiplication.Option.divmax
 import com.example.multiplication.Option.divmin
 import com.example.multiplication.Option.multimax
 import com.example.multiplication.Option.multimin
-import com.example.multiplication.databinding.ActivityMultiBinding
+import com.example.multiplication.databinding.ActivityLevelBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-
-class ActivityType : AppCompatActivity() {
-    private lateinit var binding: ActivityMultiBinding
-
+class LevelActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLevelBinding
     private var start: Int = 1
     private var end: Int = 9
-    private val START_TIME = 10000L
+    private var START_TIME = 10000L
     private lateinit var mCountDownTimer: CountDownTimer
     private var mTimeLeftInMillis = START_TIME
 
@@ -41,13 +42,14 @@ class ActivityType : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMultiBinding.inflate(layoutInflater)
+        binding = ActivityLevelBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         repository = RepositoryFactory.createRepository(check_type()).getRepository(this)
         repository_save = Repository.BaseSave(Core(this).daosave(), Now.Base())
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+            START_TIME = START_TIME -  intent.extras!!.getString(Keys.KEY_LEVEL)!!.toLong() * 500
             if (check_type()) {
                 if (repository_save.item(multimin) == null) {
                     repository_save.add(multimin, 1)
@@ -139,7 +141,7 @@ class ActivityType : AppCompatActivity() {
 
 
     fun check_type(): Boolean {
-        if (intent.extras?.getString(Keys.KEY_TYPE) == "multi") {
+        if (intent.extras?.getString(Keys.KEY_TYPE)!!.contains("multi")) {
             return true
         } else {
             return false
@@ -177,7 +179,7 @@ class ActivityType : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, LevelsActivity::class.java))
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
 //            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.slide_in_left, R.anim.slide_out_left)
 //        }
