@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.multiplication.Option.leveldiv
+import com.example.multiplication.Option.levelmulti
 import com.example.multiplication.databinding.ActivityLevelsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,22 +52,22 @@ class LevelsActivity : AppCompatActivity() {
 
         val repository = Repository.BaseSave(Core(this).daosave(), Now.Base())
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-            if (repository.item("levelmulti") == null){
-                repository.add("levelmulti", 1)
+            if (repository.item(levelmulti) == null){
+                repository.add(levelmulti, 1)
                 withContext(Dispatchers.Main){
                     binding.multitext1.isEnabled = true
                 }
 
-            } else for (i in 0..<repository.item("levelmulti")!!.number) withContext(Dispatchers.Main) {
+            } else for (i in 0..<repository.item(levelmulti)!!.number) withContext(Dispatchers.Main) {
                 list_multi[i].isEnabled = true
             }
-            if (repository.item("leveldiv") == null){
-                repository.add("leveldiv", 1)
+            if (repository.item(leveldiv) == null){
+                repository.add(leveldiv, 1)
                 withContext(Dispatchers.Main){
                     binding.divtext1.isEnabled = true
                 }
 
-            } else for (i in 0..<repository.item("leveldiv")!!.number)  withContext(Dispatchers.Main){
+            } else for (i in 0..<repository.item(leveldiv)!!.number)  withContext(Dispatchers.Main){
                 list_div[i].isEnabled = true
             }
 //            if (repository.item("levelplus") == null){

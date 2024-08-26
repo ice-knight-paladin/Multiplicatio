@@ -12,4 +12,6 @@ object Option{
     const val multimin = "multimin"
     const val divmax = "divmax"
     const val divmin = "divmin"
+    const val levelmulti = "levelmulti"
+    const val leveldiv = "leveldiv"
 }

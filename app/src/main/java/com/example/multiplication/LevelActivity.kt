@@ -11,12 +11,11 @@ import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.multiplication.Option.divmax
 import com.example.multiplication.Option.divmin
+import com.example.multiplication.Option.leveldiv
+import com.example.multiplication.Option.levelmulti
 import com.example.multiplication.Option.multimax
 import com.example.multiplication.Option.multimin
 import com.example.multiplication.databinding.ActivityLevelBinding
@@ -24,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LevelActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLevelBinding
@@ -34,6 +34,7 @@ class LevelActivity : AppCompatActivity() {
     private var mTimeLeftInMillis = START_TIME
 
     private lateinit var multi: NumberClass
+    private var number_textview = 0
 
     //private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var repository: Repository
@@ -49,7 +50,8 @@ class LevelActivity : AppCompatActivity() {
         repository_save = Repository.BaseSave(Core(this).daosave(), Now.Base())
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-            START_TIME = START_TIME -  intent.extras!!.getString(Keys.KEY_LEVEL)!!.toLong() * 500
+            START_TIME = START_TIME - intent.extras!!.getString(Keys.KEY_LEVEL)!!.toLong() * 500
+            number_textview = intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() * 10
             if (check_type()) {
                 if (repository_save.item(multimin) == null) {
                     repository_save.add(multimin, 1)
@@ -115,8 +117,9 @@ class LevelActivity : AppCompatActivity() {
                     )
                     else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
                 }
+
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
-                resetTimer()
+
 
                 if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
                 else (multi as NumberDiv).show(binding.answer, binding.expression)
@@ -125,6 +128,23 @@ class LevelActivity : AppCompatActivity() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     binding.win.visibility = View.INVISIBLE
                 }, 1000)
+                number_textview -= 1
+                if (number_textview == 0) {
+                    if (check_type()) {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                            repository_save.update(
+                                if (intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() < 10)
+                                    intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1
+                                else 10, repository_save.item(levelmulti)!!.text)
+                        }
+                    } else {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                            repository_save.update(if (intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() < 10) intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1 else 10, repository_save.item(leveldiv)!!.text)
+                        }
+                    }
+                    startActivity(Intent(this, LevelsActivity::class.java))
+                    finish()
+                } else resetTimer()
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
@@ -171,7 +191,7 @@ class LevelActivity : AppCompatActivity() {
         startTimer()
     }
 
-    fun updateprogressbar(){
+    fun updateprogressbar() {
         val progress = ((mTimeLeftInMillis / START_TIME.toDouble()) * 100).toInt()
         binding.progressBar.progress = progress
     }
