@@ -94,3 +94,112 @@ class NumberMulti(start: Int, end: Int) : NumberClass(start, end) {
         }
     }
 }
+
+class NumberPlus(start: Int, end: Int) : NumberClass(start, end) {
+    private var plus = number_one + number_two
+
+    override fun ischeak(answer: String): Boolean {
+        return answer.length == plus.toString().length && answer.toInt() == plus
+    }
+
+    override fun random() {
+        super.random()
+        plus = number_one + number_two
+    }
+
+
+    fun Item(i: Boolean, repository: Repository.BasePlus) {
+        if (repository.item(
+                "${min(number_one, number_two)} + ${
+                    max(
+                        number_one,
+                        number_two
+                    )
+                }"
+            ) == null
+        ) {
+            if (i)
+                repository.add(
+                    "${min(number_one, number_two)} + ${max(number_one, number_two)}",
+                    1,
+                    0
+                )
+            else
+                repository.add(
+                    "${min(number_one, number_two)} + ${max(number_one, number_two)}",
+                    0,
+                    1
+                )
+        } else {
+            repository.update("${min(number_one, number_two)} + ${max(number_one, number_two)}", i)
+        }
+    }
+
+    fun show(answer: TextView, expression: TextView) {
+        random()
+        answer.text = ""
+        expression.text = "$number_one + $number_two="
+    }
+
+    fun show_delete(answer: TextView) {
+        if (answer.text.toString().length != 0) {
+            answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
+        }
+    }
+}
+
+class NumberMinus(start: Int, end: Int) : NumberClass(start, end) {
+    init {
+        number_one = (number_two..end).random()
+    }
+    private var minus = number_one - number_two
+
+    override fun ischeak(answer: String): Boolean {
+        return answer.length == minus.toString().length && answer.toInt() == minus
+    }
+
+    override fun random() {
+        super.random()
+        minus = number_one - number_two
+    }
+
+
+    fun Item(i: Boolean, repository: Repository.BaseMinus) {
+        if (repository.item(
+                "${max(number_one, number_two)} - ${
+                    min(
+                        number_one,
+                        number_two
+                    )
+                }"
+            ) == null
+        ) {
+            if (i)
+                repository.add(
+                    "${max(number_one, number_two)} - ${min(number_one, number_two)}",
+                    1,
+                    0
+                )
+            else
+                repository.add(
+                    "${max(number_one, number_two)} - ${min(number_one, number_two)}",
+                    0,
+                    1
+                )
+        } else {
+            repository.update("${max(number_one, number_two)} - ${min(number_one, number_two)}", i)
+        }
+    }
+
+    fun show(answer: TextView, expression: TextView) {
+        random()
+        answer.text = ""
+        expression.text = "$number_one - $number_two="
+    }
+
+    fun show_delete(answer: TextView) {
+        if (answer.text.toString().length != 0) {
+            answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
+        }
+    }
+}

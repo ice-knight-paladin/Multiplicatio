@@ -55,6 +55,54 @@ interface ItemsDaoDiv {
 }
 
 @Dao
+interface ItemsDaoPlus {
+    @Query("SELECT * FROM item_table_plus")
+    fun list(): List<ItemCachePlus>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun add(item: ItemCachePlus)
+
+    @Update
+    fun update(item: ItemCachePlus)
+
+    @Query("DELETE FROM item_table_plus WHERE text = :text")
+    fun delete(text: String)
+
+    @Query("SELECT * FROM item_table_plus WHERE id = :id")
+    fun item(id: Long): ItemCachePlus
+
+    @Query("SELECT * FROM item_table_plus WHERE text = :text")
+    fun item(text:String) :ItemCachePlus?
+
+    @Query("DELETE FROM item_table_plus")
+    fun clear_table()
+}
+
+@Dao
+interface ItemsDaoMinus {
+    @Query("SELECT * FROM item_table_minus")
+    fun list(): List<ItemCacheMinus>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun add(item: ItemCacheMinus)
+
+    @Update
+    fun update(item: ItemCacheMinus)
+
+    @Query("DELETE FROM item_table_minus WHERE text = :text")
+    fun delete(text: String)
+
+    @Query("SELECT * FROM item_table_minus WHERE id = :id")
+    fun item(id: Long): ItemCacheMinus
+
+    @Query("SELECT * FROM item_table_minus WHERE text = :text")
+    fun item(text:String) :ItemCacheMinus?
+
+    @Query("DELETE FROM item_table_minus")
+    fun clear_table()
+}
+
+@Dao
 interface ItemsDaoSave {
     @Query("SELECT * FROM item_table_save")
     fun list(): List<ItemCacheSave>

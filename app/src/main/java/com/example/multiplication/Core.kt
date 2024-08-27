@@ -12,11 +12,13 @@ class Core(
             ItemsDataBaseMulti::class.java,
             "items_database_multi"
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
     }
 
     fun daomulti() = dataBase.itemsDaoMulti()
     fun daodiv() = dataBase.itemsDaoDiv()
     fun daosave() = dataBase.itemsDaoSave()
+    fun daoplus() = dataBase.itemsDaoPlus()
+    fun daominus() = dataBase.itemsDaoMinus()
 }

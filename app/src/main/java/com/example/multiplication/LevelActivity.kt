@@ -178,6 +178,8 @@ class LevelActivity : AppCompatActivity() {
             override fun onFinish() {
                 mTimeLeftInMillis = 0
                 updateprogressbar()
+                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
+                else (multi as NumberDiv).show(binding.answer, binding.expression)
                 resetTimer()
                 //startActivity(Intent(this@ActivityType, MainActivity::class.java))
                 //finish()
@@ -201,7 +203,7 @@ class LevelActivity : AppCompatActivity() {
         super.onBackPressed()
         startActivity(Intent(this, LevelsActivity::class.java))
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-//            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.slide_in_left, R.anim.slide_out_left)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
 //        }
         finish()
     }

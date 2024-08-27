@@ -26,3 +26,19 @@ data class ItemCacheSave(
     @ColumnInfo(name = "text") val text: String,
     @ColumnInfo(name = "number") var number: Int,
 )
+
+@Entity(tableName = "item_table_plus")
+data class ItemCachePlus(
+    @PrimaryKey @ColumnInfo(name = "id") val id: Long,
+    @ColumnInfo(name = "text") val text: String,
+    @ColumnInfo(name = "correct") var correct: Int,
+    @ColumnInfo(name = "incorrect") var incorrect: Int
+)
+
+@Entity(tableName = "item_table_minus")
+data class ItemCacheMinus(
+    @PrimaryKey @ColumnInfo(name = "id") val id: Long,
+    @ColumnInfo(name = "text") val text: String,
+    @ColumnInfo(name = "correct") var correct: Int,
+    @ColumnInfo(name = "incorrect") var incorrect: Int
+)

@@ -18,6 +18,16 @@ interface Repository {
         fun item(text: String): ItemCacheDiv?
     }
 
+    interface ReadItemPlus {
+        fun item(id: Long): Item
+        fun item(text: String): ItemCachePlus?
+    }
+
+    interface ReadItemMinus {
+        fun item(id: Long): Item
+        fun item(text: String): ItemCacheMinus?
+    }
+
     interface ReadItemSave {
         fun item(id: Long): Item_Save
         fun item(text: String): ItemCacheSave?
@@ -82,6 +92,122 @@ interface Repository {
             else
                 dataSources.update(
                     ItemCacheMulti(
+                        dataSources.item(text)!!.id,
+                        text,
+                        correct,
+                        incorrect + 1
+                    )
+                )
+        }
+
+        fun clear_table() {
+            dataSources.clear_table()
+        }
+    }
+
+    open class BasePlus(
+        private val dataSources: ItemsDaoPlus,
+        private val now: Now
+    ) : Add, Read, ReadItemPlus, Update, Repository {
+        override fun add(value: String, correct: Int, incorrect: Int): Long {
+            val id = now.nowMillis()
+            dataSources.add(ItemCachePlus(id, value, correct, incorrect))
+            return id
+        }
+
+        override fun list(): List<Item> {
+            return dataSources.list().map {
+                Item(it.id, it.text, it.correct, it.incorrect)
+            }
+        }
+
+        override fun item(id: Long): Item {
+            val itemCache = dataSources.item(id)
+            return Item(itemCache.id, itemCache.text, itemCache.correct, itemCache.incorrect)
+        }
+
+        override fun item(text: String): ItemCachePlus? {
+            val itemCache = dataSources.item(text)
+            if (itemCache == null) {
+                return null
+            }
+            return itemCache
+        }
+
+        override fun update(text: String, i: Boolean) {
+            var correct = dataSources.item(text)!!.correct
+            var incorrect = dataSources.item(text)!!.incorrect
+
+            if (i)
+                dataSources.update(
+                    ItemCachePlus(
+                        dataSources.item(text)!!.id,
+                        text,
+                        correct + 1,
+                        incorrect
+                    )
+                )
+            else
+                dataSources.update(
+                    ItemCachePlus(
+                        dataSources.item(text)!!.id,
+                        text,
+                        correct,
+                        incorrect + 1
+                    )
+                )
+        }
+
+        fun clear_table() {
+            dataSources.clear_table()
+        }
+    }
+
+    open class BaseMinus(
+        private val dataSources: ItemsDaoMinus,
+        private val now: Now
+    ) : Add, Read, ReadItemMinus, Update, Repository {
+        override fun add(value: String, correct: Int, incorrect: Int): Long {
+            val id = now.nowMillis()
+            dataSources.add(ItemCacheMinus(id, value, correct, incorrect))
+            return id
+        }
+
+        override fun list(): List<Item> {
+            return dataSources.list().map {
+                Item(it.id, it.text, it.correct, it.incorrect)
+            }
+        }
+
+        override fun item(id: Long): Item {
+            val itemCache = dataSources.item(id)
+            return Item(itemCache.id, itemCache.text, itemCache.correct, itemCache.incorrect)
+        }
+
+        override fun item(text: String): ItemCacheMinus? {
+            val itemCache = dataSources.item(text)
+            if (itemCache == null) {
+                return null
+            }
+            return itemCache
+        }
+
+        override fun update(text: String, i: Boolean) {
+            var correct = dataSources.item(text)!!.correct
+            var incorrect = dataSources.item(text)!!.incorrect
+
+            if (i)
+                dataSources.update(
+                    ItemCacheMinus(
+                        dataSources.item(text)!!.id,
+                        text,
+                        correct + 1,
+                        incorrect
+                    )
+                )
+            else
+                dataSources.update(
+                    ItemCacheMinus(
                         dataSources.item(text)!!.id,
                         text,
                         correct,
