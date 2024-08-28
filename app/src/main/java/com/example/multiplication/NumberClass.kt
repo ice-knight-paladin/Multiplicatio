@@ -116,15 +116,7 @@ class NumberPlus(start: Int, end: Int) : NumberClass(start, end) {
 
     override fun Item(i: Boolean, repository: Repository) {
         repository as Repository.BasePlus
-        if (repository.item(
-                "${min(number_one, number_two)} + ${
-                    max(
-                        number_one,
-                        number_two
-                    )
-                }"
-            ) == null
-        ) {
+        if (repository.item("${min(number_one, number_two)} + ${max(number_one, number_two)}") == null) {
             if (i)
                 repository.add(
                     "${min(number_one, number_two)} + ${max(number_one, number_two)}",

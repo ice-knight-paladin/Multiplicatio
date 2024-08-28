@@ -177,7 +177,7 @@ class ActivityType : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 50) {
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 10) {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
                 updateprogressbar()

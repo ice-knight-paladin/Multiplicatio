@@ -15,15 +15,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.multiplication.Option.divmax
 import com.example.multiplication.Option.divmin
 import com.example.multiplication.Option.leveldiv
+import com.example.multiplication.Option.levelminus
 import com.example.multiplication.Option.levelmulti
+import com.example.multiplication.Option.levelplus
+import com.example.multiplication.Option.minusmax
+import com.example.multiplication.Option.minusmin
 import com.example.multiplication.Option.multimax
 import com.example.multiplication.Option.multimin
+import com.example.multiplication.Option.plusmax
+import com.example.multiplication.Option.plusmin
 import com.example.multiplication.databinding.ActivityLevelBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LevelActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLevelBinding
@@ -32,28 +37,32 @@ class LevelActivity : AppCompatActivity() {
     private var START_TIME = 10000L
     private lateinit var mCountDownTimer: CountDownTimer
     private var mTimeLeftInMillis = START_TIME
+    private var NAME_TYPE = 0
 
-    private lateinit var multi: NumberClass
     private var number_textview = 0
 
-    //private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private lateinit var repository: Repository
+    private var repository = mutableListOf<Repository>()
     private lateinit var repository_save: Repository.BaseSave
+    private var multi = mutableListOf<NumberClass>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLevelBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        NAME_TYPE = check_type()
+        number_textview = intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() * 10
+        START_TIME -= 500L * intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt()
 
-        repository = RepositoryFactory.createRepository(check_type()).getRepository(this)
+        repository.add(Repository.BaseMulti(Core(this).daomulti(), Now.Base()))
+        repository.add(Repository.BaseDiv(Core(this).daodiv(), Now.Base()))
+        repository.add(Repository.BasePlus(Core(this).daoplus(), Now.Base()))
+        repository.add(Repository.BaseMinus(Core(this).daominus(), Now.Base()))
+
         repository_save = Repository.BaseSave(Core(this).daosave(), Now.Base())
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-            START_TIME = START_TIME - intent.extras!!.getString(Keys.KEY_LEVEL)!!.toLong() * 500
-            mTimeLeftInMillis = START_TIME
-            number_textview = intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() * 10
-            if (check_type()) {
+            if (NAME_TYPE == 0) {
                 if (repository_save.item(multimin) == null) {
                     repository_save.add(multimin, 1)
                     start = repository_save.item(multimin)!!.number
@@ -66,9 +75,7 @@ class LevelActivity : AppCompatActivity() {
                 } else {
                     end = repository_save.item(multimax)!!.number
                 }
-                multi = NumberMulti(start, end)
-            } else {
-
+            } else if (NAME_TYPE == 1) {
                 if (repository_save.item(divmin) == null) {
                     repository_save.add(divmin, 1)
                     start = repository_save.item(divmin)!!.number
@@ -81,13 +88,41 @@ class LevelActivity : AppCompatActivity() {
                 } else {
                     end = repository_save.item(divmax)!!.number
                 }
-                multi = NumberDiv(start, end)
+            } else if (NAME_TYPE == 2) {
+                if (repository_save.item(plusmin) == null) {
+                    repository_save.add(plusmin, 1)
+                    start = repository_save.item(plusmin)!!.number
+                } else {
+                    start = repository_save.item(plusmin)!!.number
+                }
+                if (repository_save.item(plusmax) == null) {
+                    repository_save.add(plusmax, 9)
+                    end = repository_save.item(plusmax)!!.number
+                } else {
+                    end = repository_save.item(plusmax)!!.number
+                }
+            } else if (NAME_TYPE == 3) {
+                if (repository_save.item(minusmin) == null) {
+                    repository_save.add(minusmin, 1)
+                    start = repository_save.item(minusmin)!!.number
+                } else {
+                    start = repository_save.item(minusmin)!!.number
+                }
+                if (repository_save.item(minusmax) == null) {
+                    repository_save.add(minusmax, 9)
+                    end = repository_save.item(minusmax)!!.number
+                } else {
+                    end = repository_save.item(minusmax)!!.number
+                }
             }
         }
         Handler().postDelayed(
             {
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                multi.add(NumberMulti(start, end))
+                multi.add(NumberDiv(start, end))
+                multi.add(NumberPlus(start, end))
+                multi.add(NumberMinus(start, end))
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
                 startTimer()
             }, 500
         )
@@ -102,50 +137,75 @@ class LevelActivity : AppCompatActivity() {
         binding.win.visibility = View.INVISIBLE
 
         binding.btnDel.setOnClickListener {
-            if (check_type()) (multi as NumberMulti).show_delete(binding.answer)
-            else (multi as NumberDiv).show_delete(binding.answer)
+            multi[NAME_TYPE].show_delete(binding.answer)
             startTimer()
         }
 
 
 
         binding.btnOk.setOnClickListener {
-            if (multi.ischeak(binding.answer.text.toString())) {
+            if (multi[NAME_TYPE].ischeak(binding.answer.text.toString())) {
                 CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(
-                        true,
-                        repository as Repository.BaseMulti
-                    )
-                    else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
+                    multi[NAME_TYPE].Item(true, repository[NAME_TYPE])
                 }
-
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
-
-
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                resetTimer()
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
 
                 binding.win.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
                     binding.win.visibility = View.INVISIBLE
                 }, 1000)
+
                 number_textview -= 1
                 if (number_textview == 0) {
-                    if (check_type()) {
-                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
+                    if (check_type() == 0) {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(
+                            Dispatchers.IO
+                        ) {
                             repository_save.update(
                                 if (intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() < 10)
                                     intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1
-                                else 10, repository_save.item(levelmulti)!!.text)
+                                else 10, repository_save.item(levelmulti)!!.text
+                            )
                         }
-                    } else {
-                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                            repository_save.update(if (intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() < 10) intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1 else 10, repository_save.item(leveldiv)!!.text)
+                    } else if (check_type() == 1) {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(
+                            Dispatchers.IO
+                        ) {
+                            repository_save.update(
+                                if (intent.extras!!.getString(Keys.KEY_LEVEL)!!
+                                        .toInt() < 10
+                                ) intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1 else 10,
+                                repository_save.item(leveldiv)!!.text
+                            )
+                        }
+                    } else if (check_type() == 2) {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(
+                            Dispatchers.IO
+                        ) {
+                            repository_save.update(
+                                if (intent.extras!!.getString(Keys.KEY_LEVEL)!!
+                                        .toInt() < 10
+                                ) intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1 else 10,
+                                repository_save.item(levelplus)!!.text
+                            )
+                        }
+                    } else if (check_type() == 3) {
+                        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(
+                            Dispatchers.IO
+                        ) {
+                            repository_save.update(
+                                if (intent.extras!!.getString(Keys.KEY_LEVEL)!!
+                                        .toInt() < 10
+                                ) intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() + 1 else 10,
+                                repository_save.item(levelminus)!!.text
+                            )
                         }
                     }
                     startActivity(Intent(this, LevelsActivity::class.java))
                     finish()
-                } else{
+                } else {
                     if (mCountDownTimer != null) {
                         mCountDownTimer.cancel()
                         resetTimer()
@@ -155,27 +215,28 @@ class LevelActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(
-                        false,
-                        repository as Repository.BaseMulti
-                    )
-                    else (multi as NumberDiv).Item(false, repository as Repository.BaseDiv)
+                    multi[NAME_TYPE].Item(false, repository[NAME_TYPE])
                 }
             }
         }
     }
 
 
-    fun check_type(): Boolean {
-        if (intent.extras?.getString(Keys.KEY_TYPE)!!.contains("multi")) {
-            return true
-        } else {
-            return false
+    fun check_type(): Int {
+        if (intent.extras?.getString(Keys.KEY_TYPE) == "multi") {
+            return 0
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "div") {
+            return 1
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "plus") {
+            return 2
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "minus") {
+            return 3
         }
+        return 0
     }
 
     private fun startTimer() {
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 50) {
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 10) {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
                 updateprogressbar()
@@ -184,11 +245,8 @@ class LevelActivity : AppCompatActivity() {
             override fun onFinish() {
                 mTimeLeftInMillis = 0
                 updateprogressbar()
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
                 resetTimer()
-                //startActivity(Intent(this@ActivityType, MainActivity::class.java))
-                //finish()
             }
 
         }.start()

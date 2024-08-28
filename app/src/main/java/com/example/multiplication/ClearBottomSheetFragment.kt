@@ -29,9 +29,20 @@ class ClearBottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_cle
             val repository_div =
                 context?.let { it1 -> Core(it1).daodiv() }
                     ?.let { it2 -> Repository.BaseDiv(it2, Now.Base()) }
+
+            val repository_plus =
+                context?.let { it1 -> Core(it1).daoplus() }
+                    ?.let { it2 -> Repository.BasePlus(it2, Now.Base()) }
+
+            val repository_minus =
+                context?.let { it1 -> Core(it1).daominus() }
+                    ?.let { it2 -> Repository.BaseMinus(it2, Now.Base()) }
+
             CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
                 repository_multi?.clear_table()
                 repository_div?.clear_table()
+                repository_plus?.clear_table()
+                repository_minus?.clear_table()
             }
             dismiss()
         }
