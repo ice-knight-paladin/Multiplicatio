@@ -39,6 +39,20 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.btnPlus.setOnClickListener {
+            val intent = Intent(this, ActivityType::class.java)
+            intent.putExtra(Keys.KEY_TYPE, "plus")
+            startActivity(intent)
+            finish()
+        }
+
+        binding.btnMinus.setOnClickListener {
+            val intent = Intent(this, ActivityType::class.java)
+            intent.putExtra(Keys.KEY_TYPE, "minus")
+            startActivity(intent)
+            finish()
+        }
+
 
         binding.btnOption.setOnClickListener{
             if (System.currentTimeMillis() - lastClick < 1000){

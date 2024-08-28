@@ -4,11 +4,13 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 class ClearBottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_clear) {
 
@@ -20,7 +22,7 @@ class ClearBottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_cle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+        view.findViewById<TextView>(R.id.btn_yes).setOnClickListener {
             val repository_multi =
                 context?.let { it1 -> Core(it1).daomulti() }
                     ?.let { it2 -> Repository.BaseMulti(it2, Now.Base()) }
@@ -33,7 +35,7 @@ class ClearBottomSheetFragment : BottomSheetDialogFragment(R.layout.fragment_cle
             }
             dismiss()
         }
-        view.findViewById<Button>(R.id.btn_no).setOnClickListener {
+        view.findViewById<TextView>(R.id.btn_no).setOnClickListener {
             dismiss()
         }
     }

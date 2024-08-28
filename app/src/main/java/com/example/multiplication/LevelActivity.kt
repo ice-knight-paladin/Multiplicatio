@@ -51,6 +51,7 @@ class LevelActivity : AppCompatActivity() {
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
             START_TIME = START_TIME - intent.extras!!.getString(Keys.KEY_LEVEL)!!.toLong() * 500
+            mTimeLeftInMillis = START_TIME
             number_textview = intent.extras!!.getString(Keys.KEY_LEVEL)!!.toInt() * 10
             if (check_type()) {
                 if (repository_save.item(multimin) == null) {
@@ -144,7 +145,12 @@ class LevelActivity : AppCompatActivity() {
                     }
                     startActivity(Intent(this, LevelsActivity::class.java))
                     finish()
-                } else resetTimer()
+                } else{
+                    if (mCountDownTimer != null) {
+                        mCountDownTimer.cancel()
+                        resetTimer()
+                    }
+                }
 
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
@@ -169,7 +175,7 @@ class LevelActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 50) {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
                 updateprogressbar()
@@ -184,6 +190,7 @@ class LevelActivity : AppCompatActivity() {
                 //startActivity(Intent(this@ActivityType, MainActivity::class.java))
                 //finish()
             }
+
         }.start()
     }
 

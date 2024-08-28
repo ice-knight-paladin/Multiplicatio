@@ -14,8 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.multiplication.Option.divmax
 import com.example.multiplication.Option.divmin
+import com.example.multiplication.Option.minusmax
+import com.example.multiplication.Option.minusmin
 import com.example.multiplication.Option.multimax
 import com.example.multiplication.Option.multimin
+import com.example.multiplication.Option.plusmax
+import com.example.multiplication.Option.plusmin
 import com.example.multiplication.databinding.ActivityMultiBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,23 +36,28 @@ class ActivityType : AppCompatActivity() {
     private lateinit var mCountDownTimer: CountDownTimer
     private var mTimeLeftInMillis = START_TIME
 
-    private lateinit var multi: NumberClass
+    private var multi = mutableListOf<NumberClass>()
+    private var repository = mutableListOf<Repository>()
 
-    //private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private lateinit var repository: Repository
     private lateinit var repository_save: Repository.BaseSave
+    private var NAME_TYPE = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMultiBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        NAME_TYPE = check_type()
 
-        repository = RepositoryFactory.createRepository(check_type()).getRepository(this)
+        repository.add(Repository.BaseMulti(Core(this).daomulti(), Now.Base()))
+        repository.add(Repository.BaseDiv(Core(this).daodiv(), Now.Base()))
+        repository.add(Repository.BasePlus(Core(this).daoplus(), Now.Base()))
+        repository.add(Repository.BaseMinus(Core(this).daominus(), Now.Base()))
+
         repository_save = Repository.BaseSave(Core(this).daosave(), Now.Base())
 
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-            if (check_type()) {
+            if (NAME_TYPE==0) {
                 if (repository_save.item(multimin) == null) {
                     repository_save.add(multimin, 1)
                     start = repository_save.item(multimin)!!.number
@@ -61,9 +70,7 @@ class ActivityType : AppCompatActivity() {
                 } else {
                     end = repository_save.item(multimax)!!.number
                 }
-                multi = NumberMulti(start, end)
-            } else {
-
+            } else  if (NAME_TYPE == 1){
                 if (repository_save.item(divmin) == null) {
                     repository_save.add(divmin, 1)
                     start = repository_save.item(divmin)!!.number
@@ -76,16 +83,45 @@ class ActivityType : AppCompatActivity() {
                 } else {
                     end = repository_save.item(divmax)!!.number
                 }
-                multi = NumberDiv(start, end)
+            } else if (NAME_TYPE == 2){
+                if (repository_save.item(plusmin) == null) {
+                    repository_save.add(plusmin, 1)
+                    start = repository_save.item(plusmin)!!.number
+                } else {
+                    start = repository_save.item(plusmin)!!.number
+                }
+                if (repository_save.item(plusmax) == null) {
+                    repository_save.add(plusmax, 9)
+                    end = repository_save.item(plusmax)!!.number
+                } else {
+                    end = repository_save.item(plusmax)!!.number
+                }
+            } else if (NAME_TYPE == 3){
+                if (repository_save.item(minusmin) == null) {
+                    repository_save.add(minusmin, 1)
+                    start = repository_save.item(minusmin)!!.number
+                } else {
+                    start = repository_save.item(minusmin)!!.number
+                }
+                if (repository_save.item(minusmax) == null) {
+                    repository_save.add(minusmax, 9)
+                    end = repository_save.item(minusmax)!!.number
+                } else {
+                    end = repository_save.item(minusmax)!!.number
+                }
             }
         }
         Handler().postDelayed(
             {
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                multi.add(NumberMulti(start, end))
+                multi.add(NumberDiv(start, end))
+                multi.add(NumberPlus(start, end))
+                multi.add(NumberMinus(start, end))
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
                 startTimer()
             }, 500
         )
+
 
 
         val source = ImageDecoder.createSource(
@@ -97,27 +133,20 @@ class ActivityType : AppCompatActivity() {
         binding.win.visibility = View.INVISIBLE
 
         binding.btnDel.setOnClickListener {
-            if (check_type()) (multi as NumberMulti).show_delete(binding.answer)
-            else (multi as NumberDiv).show_delete(binding.answer)
+            multi[NAME_TYPE].show_delete(binding.answer)
             startTimer()
         }
 
 
 
         binding.btnOk.setOnClickListener {
-            if (multi.ischeak(binding.answer.text.toString())) {
+            if (multi[NAME_TYPE].ischeak(binding.answer.text.toString())) {
                 CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(
-                        true,
-                        repository as Repository.BaseMulti
-                    )
-                    else (multi as NumberDiv).Item(true, repository as Repository.BaseDiv)
+                    multi[NAME_TYPE].Item(true, repository[NAME_TYPE])
                 }
                 Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
                 resetTimer()
-
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
 
                 binding.win.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -127,36 +156,37 @@ class ActivityType : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
-                    if (check_type()) (multi as NumberMulti).Item(
-                        false,
-                        repository as Repository.BaseMulti
-                    )
-                    else (multi as NumberDiv).Item(false, repository as Repository.BaseDiv)
+                    multi[NAME_TYPE].Item(false, repository[NAME_TYPE])
                 }
             }
         }
     }
 
 
-    fun check_type(): Boolean {
+    fun check_type(): Int {
         if (intent.extras?.getString(Keys.KEY_TYPE) == "multi") {
-            return true
-        } else {
-            return false
+            return 0
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "div"){
+            return 1
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "plus"){
+            return 2
+        } else if (intent.extras?.getString(Keys.KEY_TYPE) == "minus"){
+            return 3
         }
+        return 0
     }
 
     private fun startTimer() {
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 50) {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
                 updateprogressbar()
             }
 
+
             override fun onFinish() {
                 mTimeLeftInMillis = 0
-                if (check_type()) (multi as NumberMulti).show(binding.answer, binding.expression)
-                else (multi as NumberDiv).show(binding.answer, binding.expression)
+                multi[NAME_TYPE].show(binding.answer, binding.expression)
                 updateprogressbar()
                 resetTimer()
 

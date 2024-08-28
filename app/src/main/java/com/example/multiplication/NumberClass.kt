@@ -1,5 +1,6 @@
 package com.example.multiplication
 
+import android.util.Log
 import android.widget.TextView
 import kotlin.math.max
 import kotlin.math.min
@@ -18,6 +19,9 @@ abstract class NumberClass(
     }
 
     abstract fun ischeak(answer:String):Boolean
+    abstract fun show(answer: TextView, expression: TextView)
+    abstract fun show_delete(answer: TextView)
+    abstract fun Item(b: Boolean, repository: Repository)
 
 }
 
@@ -34,7 +38,8 @@ class NumberDiv(start: Int, end: Int) : NumberClass(start, end) {
     }
 
 
-    fun Item(i: Boolean, repository: Repository.BaseDiv) {
+    override fun Item(i: Boolean, repository: Repository) {
+        repository as Repository.BaseDiv
         if (repository.item("${number_one*number_two} / ${number_two}") == null) {
             if (i)
                 repository.add("${number_one*number_two} / ${number_two}", 1, 0)
@@ -45,13 +50,13 @@ class NumberDiv(start: Int, end: Int) : NumberClass(start, end) {
         }
     }
 
-    fun show(answer: TextView, expression:TextView){
+    override fun show(answer: TextView, expression:TextView){
         random()
         answer.text = ""
         expression.text = "${number_one * number_two} / $number_two="
     }
 
-    fun show_delete(answer: TextView){
+    override fun show_delete(answer: TextView){
         if (answer.text.toString().length != 0){
             answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
         }
@@ -71,7 +76,8 @@ class NumberMulti(start: Int, end: Int) : NumberClass(start, end) {
     }
 
 
-    fun Item(i: Boolean, repository: Repository.BaseMulti) {
+    override fun Item(i: Boolean, repository: Repository) {
+        repository as Repository.BaseMulti
         if     (repository.item("${min(number_one, number_two)} * ${max(number_one, number_two)}") == null) {
             if (i)
                 repository.add("${min(number_one, number_two)} * ${max(number_one, number_two)}", 1, 0)
@@ -82,13 +88,13 @@ class NumberMulti(start: Int, end: Int) : NumberClass(start, end) {
         }
     }
 
-    fun show(answer: TextView, expression:TextView){
+    override fun show(answer: TextView, expression:TextView){
         random()
         answer.text = ""
         expression.text = "$number_one * $number_two="
     }
 
-    fun show_delete(answer: TextView){
+    override fun show_delete(answer: TextView){
         if (answer.text.toString().length != 0){
             answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
         }
@@ -108,7 +114,8 @@ class NumberPlus(start: Int, end: Int) : NumberClass(start, end) {
     }
 
 
-    fun Item(i: Boolean, repository: Repository.BasePlus) {
+    override fun Item(i: Boolean, repository: Repository) {
+        repository as Repository.BasePlus
         if (repository.item(
                 "${min(number_one, number_two)} + ${
                     max(
@@ -135,20 +142,20 @@ class NumberPlus(start: Int, end: Int) : NumberClass(start, end) {
         }
     }
 
-    fun show(answer: TextView, expression: TextView) {
+    override fun show(answer: TextView, expression: TextView) {
         random()
         answer.text = ""
         expression.text = "$number_one + $number_two="
     }
 
-    fun show_delete(answer: TextView) {
+    override fun show_delete(answer: TextView) {
         if (answer.text.toString().length != 0) {
             answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
         }
     }
 }
 
-class NumberMinus(start: Int, end: Int) : NumberClass(start, end) {
+class NumberMinus(private val start: Int,private val  end: Int) : NumberClass(start, end) {
     init {
         number_one = (number_two..end).random()
     }
@@ -160,11 +167,13 @@ class NumberMinus(start: Int, end: Int) : NumberClass(start, end) {
 
     override fun random() {
         super.random()
+        number_one = (number_two..end).random()
         minus = number_one - number_two
     }
 
 
-    fun Item(i: Boolean, repository: Repository.BaseMinus) {
+    override fun Item(i: Boolean, repository: Repository) {
+        repository as Repository.BaseMinus
         if (repository.item(
                 "${max(number_one, number_two)} - ${
                     min(
@@ -191,13 +200,14 @@ class NumberMinus(start: Int, end: Int) : NumberClass(start, end) {
         }
     }
 
-    fun show(answer: TextView, expression: TextView) {
+    override fun show(answer: TextView, expression: TextView) {
         random()
+        Log.d("mylog", "${number_one}, ${number_two}")
         answer.text = ""
         expression.text = "$number_one - $number_two="
     }
 
-    fun show_delete(answer: TextView) {
+    override fun show_delete(answer: TextView) {
         if (answer.text.toString().length != 0) {
             answer.text = answer.text.toString().subSequence(0, answer.text.toString().length - 1)
         }
