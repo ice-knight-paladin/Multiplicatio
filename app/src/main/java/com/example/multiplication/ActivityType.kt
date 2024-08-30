@@ -134,7 +134,6 @@ class ActivityType : AppCompatActivity() {
 
         binding.btnDel.setOnClickListener {
             multi[NAME_TYPE].show_delete(binding.answer)
-            startTimer()
         }
 
 

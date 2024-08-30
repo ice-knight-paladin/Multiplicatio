@@ -38,6 +38,7 @@ class LevelActivity : AppCompatActivity() {
     private lateinit var mCountDownTimer: CountDownTimer
     private var mTimeLeftInMillis = START_TIME
     private var NAME_TYPE = 0
+    private var ERORRS = 3
 
     private var number_textview = 0
 
@@ -138,7 +139,6 @@ class LevelActivity : AppCompatActivity() {
 
         binding.btnDel.setOnClickListener {
             multi[NAME_TYPE].show_delete(binding.answer)
-            startTimer()
         }
 
 
@@ -206,13 +206,17 @@ class LevelActivity : AppCompatActivity() {
                     startActivity(Intent(this, LevelsActivity::class.java))
                     finish()
                 } else {
-                    if (mCountDownTimer != null) {
-                        mCountDownTimer.cancel()
-                        resetTimer()
-                    }
+                    mCountDownTimer.cancel()
+                    resetTimer()
                 }
 
             } else {
+                ERORRS -= 1
+                if (ERORRS == 0){
+                    mCountDownTimer.cancel()
+                    startActivity(Intent(this, LevelsActivity::class.java))
+                    finish()
+                }
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                 CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch(Dispatchers.IO) {
                     multi[NAME_TYPE].Item(false, repository[NAME_TYPE])
@@ -248,7 +252,6 @@ class LevelActivity : AppCompatActivity() {
                 multi[NAME_TYPE].show(binding.answer, binding.expression)
                 resetTimer()
             }
-
         }.start()
     }
 
